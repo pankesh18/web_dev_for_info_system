@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .forms import UserRegistrationForm
-
+from django.contrib.auth.decorators import login_required
 
 def login(request):
     return render(request, 'manage_user/login.html')
@@ -31,6 +31,7 @@ def register(request):
     return render(request, 'manage_user/register.html' , {'form':form})
 
 
-
-
+@login_required
+def profile(request):
+    return render(request, 'manage_user/profile.html')
     

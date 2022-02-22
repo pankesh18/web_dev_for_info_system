@@ -2,7 +2,7 @@ from urllib import response
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Book
-
+from django.contrib.auth.decorators import login_required
 
 # books = [   {
 #         'BookTitle':'Pride and Prejudice',
@@ -41,7 +41,7 @@ from .models import Book
 # ]
 
 
-
+@login_required
 def booklist(request):
     context ={
         'books':Book.objects.all()
