@@ -1,0 +1,158 @@
+{% extends "../base.html" %}
+{% block content %}
+
+
+
+
+
+
+    <div class="container py-2 my-5" style="border-style: inset; border-radius: 0%; border-top: 0; border-bottom: 0; float: left;">
+
+
+
+
+
+        {% for book in books %} 
+
+
+        {% if not book.IssuedBy %}
+
+            <div class="col" style="background-color: #a9a9a91f; float: inherit;   width: 32%;  padding: 10px; border-radius:10%; margin: 5px; " data-bs-toggle="modal" data-bs-target="#bk_{{ forloop.counter }}">
+                <div class="col-sm my-2" style="text-align: center;"><img src="{{ book.Image.url }}" width="200" height="300" ></div>
+                <div class="col-sm my-2" style="text-align: center;">
+                    <div >
+                        <h3>  {{ book.BookTitle  }}    </h3>
+                        <div class="display-5 muted">    {{ book.Author }}    </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#bk_{{ forloop.counter }}">
+                    View
+                  </button>
+                </div>
+            </div>
+        {% else %}
+
+        <div class="col" style="background-color: #a9a9a91f; float: inherit;   width: 32%;  padding: 10px; border-radius:10%; margin: 5px;">
+          <div  style="position: absolute; color: red; font-weight: bold; top: 40%;left: 30%; font-size: x-large  ; ">
+            Book Issued!
+          </div>
+          <div  style="opacity: 0.3;">
+            <div class="col-sm my-2" style="text-align: center;"><img src="{{ book.Image.url }}" width="200" height="300" ></div>
+            <div class="col-sm my-2" style="text-align: center;">
+                <div >
+                    <h3>  {{ book.BookTitle  }}    </h3>
+                    <div class="display-5 muted">    {{ book.Author }}    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-secondary">
+                View
+              </button>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+
+
+  <div class="modal fade" id="bk_{{ forloop.counter }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="staticBackdropLabel">{{ book.BookTitle  }}</h3>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> X </button>
+        </div>
+        <div class="modal-body">
+            <div class="row"">
+                <div class="col-7" style="background-color: #a9a9a91f;">
+
+    
+                        <span>    <h6>Year :</h6>           {{ book.Year  }}        </span>
+                        <span>    <h6>Genre :</h6>          {{ book.Genre  }}       </span>
+                        <span>    <h6>Language :</h6>       {{ book.Language  }}    </span>
+                        <span>    <h6>Description :</h6>    {{ book.Description  }} </span>
+                        <span>    <h6>Tags :</h6>           {{ book.Tags  }}        </span>
+                        <span>    <h6>ISBN :</h6>           {{ book.ISBN  }}        </span>
+                        <span>    <h6>Publisher :</h6>      {{ book.Publisher }}    </span>     
+                        
+                </div>
+                <div class="col-5" style="background-color: #a9a9a91f;" >
+                    <img src="{{ book.Image.url }}" width="200" height="300" >
+                    <form action="" method="POST">
+                      {% csrf_token %}
+                      <button class="btn btn-secondary" onclick="issueBook('{{book.id}}')" />Issue Book</button>
+                  </form>
+                  
+                </div>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+
+
+    <button id="btn-IssueSuccessModal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#IssueSuccessModal" style="display: none;" >
+      IssueSuccessModal
+    </button>
+    <div class="modal fade" id="IssueSuccessModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="IssueSuccessModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="IssueSuccessModalLabel">Modal title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Understood</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+    <script>
+
+      function issueBook(book){
+        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+      function csrfSafeMethod(method) {
+          return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+
+      $.ajaxSetup({
+          beforeSend: function (xhr, settings) {
+              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+              }
+          }
+      });
+        $.ajax({  
+              type: "POST",
+              url: "/lib/issueBook",
+              data: {'id':book},
+              success: function() {
+                $('#btn-IssueSuccessModal').click()
+                // alert("success")
+    
+              }
+        })
+      }
+    
+
+
+    </script>
+
+
+
+{% endblock content %}    
