@@ -1,7 +1,10 @@
+from asyncio.windows_events import NULL
+
+from telnetlib import STATUS
 from urllib import response
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Book
+from .models import Book,MyBook
 from django.contrib.auth.decorators import login_required
 
 # books = [   {
@@ -47,4 +50,63 @@ def booklist(request):
         'books':Book.objects.all()
     }
     return render(request, 'Library/booklist.html', context)
+
+
+
+
+@login_required
+def IssueBook(request):
+    book = request.POST.get("id",None)
+    bk=Book.objects.get(pk=book)
+    bk.IssuedBy = request.user
+    bk.save()
+    print("book saved")
+
+
+    oldbooks= MyBook.objects.filter(book=bk)
+    print(oldbooks)
+    oldbooks.delete()
+
+    mybk= MyBook(book=bk,user=request.user)
+    mybk.save()
+    print("My book saved")
+
+    return HttpResponse(status=200)
+
+
+
+
+@login_required
+def mybooks(request):
+    context ={
+        'mybooks':MyBook.objects.all()
+    }
+    return render(request, 'Library/mybooks.html', context)
+
+
+
+
+
+
+
+
+@login_required
+def returnBook(request):
+    book = request.POST.get("id",None)
+    bk=Book.objects.get(pk=book)
+    bk.IssuedBy = None
+    bk.save()
+    print("book saved")
+
+
+    oldbooks= MyBook.objects.filter(book=bk)
+    print(oldbooks)
+    oldbooks.delete()
+
+    print("book returned")
+
+    return HttpResponse(status=200)
+
+
+
 

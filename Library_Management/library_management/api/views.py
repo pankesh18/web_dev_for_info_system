@@ -6,4 +6,6 @@ def getData(request):
     person={'name':'Denis', 'age':28}
     return Response(person)
     
-
+# @api_view(['POST'])
+# def IssueBook(request):
+#     print()
