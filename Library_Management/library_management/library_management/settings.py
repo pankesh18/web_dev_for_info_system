@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'manage_user.apps.ManageUserConfig',
     'Library.apps.LibraryConfig',
     'api.apps.ApiConfig',
+    'requestbook.apps.RequestbookConfig',
     'rest_framework',
 ]
 
