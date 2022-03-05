@@ -71,7 +71,7 @@
 
 
       <main role="main" class="container">
-        <div class="row">
+        <div class="row" id="messages">
           {% if messages %}
             {% for message in messages %}
             <div class="alert alert-{{ message.tags }}">

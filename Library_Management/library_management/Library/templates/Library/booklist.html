@@ -6,7 +6,7 @@
 
 
 
-    <div class="container py-2 my-5" style="border-style: inset; border-radius: 0%; border-top: 0; border-bottom: 0; float: left;">
+    <div id="book_container" class="container py-2 my-5" style="border-style: inset; border-radius: 0%; border-top: 0; border-bottom: 0; float: left;">
 
 
 
@@ -17,14 +17,14 @@
 
         {% if not book.IssuedBy %}
 
-            <div class="col" style="background-color: #a9a9a91f; float: inherit;   width: 32%;  padding: 10px; border-radius:10%; margin: 5px; " data-bs-toggle="modal" data-bs-target="#bk_{{ forloop.counter }}">
+            <div class="col" style="background-color: #a9a9a91f; float: inherit;   width: 32%;  padding: 10px; border-radius:10%; margin: 5px; max-height:fit-content;" data-bs-toggle="modal" data-bs-target="#bk_{{ forloop.counter }}">
                 <div class="col-sm my-2" style="text-align: center;"><img src="{{ book.Image.url }}" width="200" height="300" ></div>
                 <div class="col-sm my-2" style="text-align: center;">
                     <div >
-                        <h3>  {{ book.BookTitle  }}    </h3>
+                        <h4>  {{ book.BookTitle  }}    </h4>
                         <div class="display-5 muted">    {{ book.Author }}    </div>
                     </div>
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#bk_{{ forloop.counter }}">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#bk_{{ book.id }}">
                     View
                   </button>
                 </div>
@@ -39,7 +39,7 @@
             <div class="col-sm my-2" style="text-align: center;"><img src="{{ book.Image.url }}" width="200" height="300" ></div>
             <div class="col-sm my-2" style="text-align: center;">
                 <div >
-                    <h3>  {{ book.BookTitle  }}    </h3>
+                    <h4>  {{ book.BookTitle  }}    </h4>
                     <div class="display-5 muted">    {{ book.Author }}    </div>
                 </div>
                 <button type="button" class="btn btn-sm btn-secondary">
@@ -52,7 +52,7 @@
 
 
 
-  <div class="modal fade" id="bk_{{ forloop.counter }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal fade bookinfo" id="bk_{{ book.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
@@ -73,12 +73,12 @@
                         <span>    <h6>Publisher :</h6>      {{ book.Publisher }}    </span>     
                         
                 </div>
-                <div class="col-5" style="background-color: #a9a9a91f;" >
+                <div class="col-5" style="background-color: #a9a9a91f; text-align: center;" >
                     <img src="{{ book.Image.url }}" width="200" height="300" >
-                    <form action="" method="POST">
+               
                       {% csrf_token %}
-                      <button class="btn btn-secondary" onclick="issueBook('{{book.id}}')" />Issue Book</button>
-                  </form>
+                      <button class="btn btn-secondary my-3" data-dismiss="modal" onclick="issueBook('{{book.id}}')" />Issue Book</button>
+      
                   
                 </div>
             </div>
@@ -91,31 +91,17 @@
 
         {% endfor %}
 
+<div id="book_modal">
 
+</div>
+
+    
     </div>
 
 
 
-    <button id="btn-IssueSuccessModal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#IssueSuccessModal" style="display: none;" >
-      IssueSuccessModal
-    </button>
-    <div class="modal fade" id="IssueSuccessModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="IssueSuccessModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="IssueSuccessModalLabel">Modal title</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            ...
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Understood</button>
-          </div>
-        </div>
-      </div>
-    </div>
+
+
 
 
 
@@ -141,11 +127,57 @@
               type: "POST",
               url: "/lib/issueBook",
               data: {'id':book},
-              success: function() {
-                $('#btn-IssueSuccessModal').click()
-                // alert("success")
-    
+              success: function(data, textStatus, jqXHR) {
+                // $('#btn-IssueSuccessModal').click()
+                console.log(data.msg)
+                var md=`<div class="modal fade" id="ResponseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="ResponseModallLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="ResponseModalLabel">Yay!</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                             ${data.msg}
+                            </div>
+                            <div class="modal-footer">
+                              <a type="button" class="btn btn-secondary"  href="{% url 'home' %}">Close</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>`
+                    
+                  document.getElementById('book_modal').innerHTML =md
+                  $(`#bk_${book}`).modal('hide')
+                  $('#ResponseModal').modal('show') 
+
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                err =JSON.parse(XMLHttpRequest.responseText)
+
+
+                var md=`<div class="modal fade" id="ResponseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="ResponseModallLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="ResponseModalLabel">Error</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                             ${err['msg']}
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>`
+                    
+                  document.getElementById('book_modal').innerHTML =md
+                  $(`#bk_${book}`).modal('hide')
+                  $('#ResponseModal').modal('show') 
               }
+                          
         })
       }
     

@@ -1,5 +1,7 @@
 from asyncio.windows_events import NULL
-
+import json
+from msilib.schema import Error
+from django.contrib import messages
 from telnetlib import STATUS
 from urllib import response
 from django.shortcuts import render, redirect
@@ -56,22 +58,36 @@ def booklist(request):
 
 @login_required
 def IssueBook(request):
-    book = request.POST.get("id",None)
-    bk=Book.objects.get(pk=book)
-    bk.IssuedBy = request.user
-    bk.save()
-    print("book saved")
 
 
-    oldbooks= MyBook.objects.filter(book=bk)
-    print(oldbooks)
-    oldbooks.delete()
+    if  MyBook.objects.filter(user=request.user).count()>=1:
+        
+        response = HttpResponse(json.dumps({'msg': f'You cant issue more books. Please return previous books'}), 
+        content_type='application/json')
+        response.status_code=400
+        return response
+        
+    else:
 
-    mybk= MyBook(book=bk,user=request.user)
-    mybk.save()
-    print("My book saved")
+        book = request.POST.get("id",None)
+        bk=Book.objects.get(pk=book)
+        bk.IssuedBy = request.user
+        bk.save()
+        print("book saved")
 
-    return HttpResponse(status=200)
+
+        oldbooks= MyBook.objects.filter(book=bk)
+        print(oldbooks)
+        oldbooks.delete()
+
+        mybk= MyBook(book=bk,user=request.user)
+        mybk.save()
+        print("My book saved")
+
+        response = HttpResponse(json.dumps({'msg': f'Your book has been issued'}), 
+        content_type='application/json')
+        response.status_code=200    
+        return response
 
 
 
@@ -79,7 +95,7 @@ def IssueBook(request):
 @login_required
 def mybooks(request):
     context ={
-        'mybooks':MyBook.objects.all()
+        'mybooks':MyBook.objects.filter(user=request.user)
     }
     return render(request, 'Library/mybooks.html', context)
 
