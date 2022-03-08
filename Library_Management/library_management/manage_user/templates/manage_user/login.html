@@ -11,7 +11,7 @@
     <title>Library</title>
   </head>
   <body>
-
+    {%load crispy_forms_tags %}
     <div class="m-5 p-5">
       <!-- <div class="bg order-1 order-md-2" style="background-image: url('images/bg_1.jpg');"></div> -->
       <div class="contents order-2 order-md-1">
@@ -31,22 +31,26 @@
 
 
           <div class="row align-items-center justify-content-center">
- 
-            <div class="content-section">
+            <div class="row" style="text-align: center;">
+              <h3>Welcome to A2Z Library</h3> 
+
+            </div>
+            <div class="content-section" style="width: 70%;">
+          
               <form method="POST">
                   {% csrf_token %}
                   <fieldset class="form-group">
                       <legend class="border-bottom mb-4">Log In</legend>
-                      {{ form.as_p}}
+                      {{ form |crispy}}
                   </fieldset>
 
                   
-                  <div class="form-group">
-                      <button class="btn btn-outline-info" type="submit">Login</button>
+                  <div class="form-group my-3" style="text-align: center;">
+                      <button class="btn btn-outline-dark" type="submit">Login</button>
                   </div>
               </form>
 
-              <div class="border-top pt-3">
+              <div class="border-top pt-3" style="text-align: center;">
                   <small class="text-muted">
                       Dont Have An Account? <a class="ml-2" href="{% url 'user-register' %}">Sign Up</a>
                   </small>

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'requestbook.apps.RequestbookConfig',
     'rest_framework',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -134,7 +135,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 MEDIA_URL ='/media/'
 
-
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL='home'
 

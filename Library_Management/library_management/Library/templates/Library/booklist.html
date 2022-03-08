@@ -4,15 +4,31 @@
 
 
 
-
+<div class="row">
 
     <div id="book_container" class="container py-2 my-5" style="border-style: inset; border-radius: 0%; border-top: 0; border-bottom: 0; float: left;">
+      <div class="input-group rounded my-3" style="width: 100%; text-align: left;">
+        <form method="POST" style="width: 100%;">
+          <div class="row">
+          <div class="col-10">
+            <input type="search" id="search" name="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+
+          </div>
+          <div class="col-2">
+            {% csrf_token %}
+
+            <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
+            <a type="button" class="btn btn-outline-secondary"  href="{% url 'home' %}">Clear</a>
+          </div>
+        </div>
+
+      </form>  
+      </div>
 
 
 
 
-
-        {% for book in books %} 
+        {% for book in page_obj %} 
 
 
         {% if not book.IssuedBy %}
@@ -91,6 +107,9 @@
 
         {% endfor %}
 
+
+
+
 <div id="book_modal">
 
 </div>
@@ -98,9 +117,34 @@
     
     </div>
 
+</div>
+<div class="row">
+<div class="container m-3">
+  <div class="row" >
+    <div class="col" style="text-align: center; left: 40%;">
+      <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a  class="btn btn-outline-dark" href="?page=1">&laquo; first</a>
+                <a class="btn btn-outline-dark" href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+      
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+      
+            {% if page_obj.has_next %}
+                <a class="btn btn-outline-dark" href="?page={{ page_obj.next_page_number }}">next</a>
+                <a class="btn btn-outline-dark" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+      </div>
+    </div>
 
+  </div>
 
-
+</div>
+</div>        
 
 
 
