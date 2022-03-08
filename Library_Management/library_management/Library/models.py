@@ -12,12 +12,12 @@ class Book(models.Model):
     Description = models.TextField()
     Tags  = models.CharField(max_length=1000)
     ISBN = models.CharField(max_length=1000)
-    Image = models.ImageField(default='default.jpg',blank=True, upload_to='book_images')
+    Image = models.ImageField(default='../media/book_images/default-movie.jpg',blank=True, upload_to='book_images')
     IssuedBy = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
 
 
 
 class MyBook(models.Model):
     book = models.OneToOneField(Book, on_delete=models.CASCADE)
-    user = models.OneToOneField(User,  on_delete=models.CASCADE)
+    user = models.ForeignKey(User,  on_delete=models.CASCADE)
     IssuedDate = models.DateField( default=datetime.date.today)  

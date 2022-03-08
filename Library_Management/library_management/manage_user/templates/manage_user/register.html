@@ -11,7 +11,7 @@
     <title>Hello, world!</title>
   </head>
   <body>
-
+    {%load crispy_forms_tags %}
     <div class="m-5 p-5">
       <!-- <div class="bg order-1 order-md-2" style="background-image: url('images/bg_1.jpg');"></div> -->
       <div class="contents order-2 order-md-1">
@@ -25,20 +25,20 @@
               <form method="POST">
                   {% csrf_token %}
                   <fieldset class="form-group">
-                      <legend class="border-bottom mb-4">Sign up at Library</legend>
-                      {{ form.as_p}}
+                      <legend class="border-bottom mb-4">Registeration for A2Z Library</legend>
+                      {{ form|crispy}}
                   </fieldset>
 
                   
-                  <div class="form-group">
-                      <button class="btn btn-outline-info" type="submit">Sign Up</button>
+                  <div class="form-group mt-5">
+                      <button class="btn btn-outline-dark" type="submit">Sign Up</button>
                   </div>
               </form>
               <div class="row my-3">
                 {% if messages %}
                   {% for message in messages %}
                   <div class="alert alert-{{ message.tags }}">
-                      {{message}}
+                      {{message}} 
                   </div>
                   {% endfor %}
                 {% endif %}

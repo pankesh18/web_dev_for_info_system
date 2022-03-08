@@ -23,7 +23,7 @@ def register(request):
             return redirect('login')
         else:
             username=form.cleaned_data.get('username')
-            messages.success(request, f'Invalid Input!')
+            messages.error(request, f'Invalid Input!')
             return render(request, 'manage_user/register.html' , {'form':form})
     else:
         form = UserRegistrationForm()
